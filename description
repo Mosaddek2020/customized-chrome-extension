@@ -25,3 +25,24 @@ Bookmarklets(steps):
         from a html page.
     3. create a html file containing a <a href="JavaScript:().()"></a>
     4. open it in the chrome and drag the link in the upper bar of the browser to make it a bookmark.
+
+// version 2
+
+for hosting JS 
+   1. set up local server  @ http://127.0.0.1:8887 
+      links for setting local server:
+         https://github.com/kzahel/web-server-chrome
+         https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
+
+
+
+<a href="javascript:(
+    function(){
+        var script = document.createElement('script'); 
+        var url = 'http://127.0.0.1:8887/bookmarklet.js';
+        script.src = url + "?" + new Date().getTime();  //browser cache clear
+        document.body.appendChild(script);
+        })();"
+    >  link
+      
+</a> 
