@@ -1,48 +1,131 @@
 Bookmarklets:
-a simple way to modify ,run JavaScript code to modify browser content via a bookmark button.
+    a simple way to modify ,run JavaScript code to modify browser content via a bookmark button.
 
-anonimous function/self revoking function
+    anonimous function/self revoking function
 
-    ().()
+        ().()
 
-    (function (){}).()
-
-
-    (function (){
-        alert('hello');
-
-    }).()
+        (function (){}).()
 
 
-Bookmarklets(steps):
-    1. create a bookmark with JavaScript functon.
-    2. when this is pressed  function will be executed.
+        (function (){
+            alert('hello');
 
-        easy way to do that is to 'drag and drop' a 
-            
-            ' <a href="JavaScript:(function(){}).()" '
-
-        from a html page.
-    3. create a html file containing a <a href="JavaScript:().()"></a>
-    4. open it in the chrome and drag the link in the upper bar of the browser to make it a bookmark.
-
-// version 2
-
-for hosting JS 
-   1. set up local server  @ http://127.0.0.1:8887 
-      links for setting local server:
-         https://github.com/kzahel/web-server-chrome
-         https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
+        }).()
 
 
+    Bookmarklets(steps):
+        1. create a bookmark with JavaScript functon.
+        2. when this is pressed  function will be executed.
 
-<a href="javascript:(
-    function(){
-        var script = document.createElement('script'); 
-        var url = 'http://127.0.0.1:8887/bookmarklet.js';
-        script.src = url + "?" + new Date().getTime();  //browser cache clear
-        document.body.appendChild(script);
-        })();"
-    >  link
-      
-</a> 
+            easy way to do that is to 'drag and drop' a 
+                
+                ' <a href="JavaScript:(function(){}).()" '
+
+            from a html page.
+        3. create a html file containing a <a href="JavaScript:().()"></a>
+        4. open it in the chrome and drag the link in the upper bar of the browser to make it a bookmark.
+
+    // version 2
+
+    for hosting JS 
+    1. set up local server  @ http://127.0.0.1:8887 
+        links for setting local server:
+            https://github.com/kzahel/web-server-chrome
+            https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
+
+
+
+    <a href="javascript:(
+        function(){
+            var script = document.createElement('script'); 
+            var url = 'http://127.0.0.1:8887/bookmarklet.js';
+            script.src = url + "?" + new Date().getTime();  //browser cache clear
+            document.body.appendChild(script);
+            })();"
+        >  link
+        
+    </a> 
+
+Browser Extension Basics:
+    A chrome extension is a way of adding functionality to the chrome browser.
+ Scope:
+    1.You can add interface elements
+    2. open and close tabs
+    3 interact with the address bar
+    4. as well as modify the contents of any page the browser is currently on.
+    5 The lovely thing for us is that extensions can be built with the same open web tools that we are already using – HTML, CSS, JavaScript.
+ Basic structure:
+    1.manifest.json file:
+        All chrome extensions require a manifest.json file.
+        This file includes
+            a. metadata about the extensions
+            b. sets its permissions
+            c. and references all the JavaScript, CSS, and other files associated with the extension.
+        
+        Example: manifest.json 
+            {
+                "manifest_version": 2,
+                "name" : "My Extension",
+                "version": "1.0",
+                "content_scripts" : [
+
+                    {
+                        "matches":[
+                            "<all_urls>"
+                        ]
+                        "js": ["content.js"]
+                    }
+                ]
+            }
+
+        You also need to specify which URLs the content script should run on. For example for all URLs, you would add:
+
+            "content_scripts" : [
+
+                {
+                    "matches":[
+                        "<all_urls>"
+                    ]
+                    "js": ["content.js"]
+                }
+            ]
+
+        You can also specify individual unique URLs and using the wildcard * to encompass all paths on a given domain. For example, the following would run the content script on any github.com page:
+
+            "content_scripts": [
+
+                {
+                    "matches": [
+                        "http://*github*"
+                        "https://*github*"
+                        
+                    ]
+                    "js" : ["content.js"]
+                }
+            ]
+    2.Content.js file:
+        By default, Chrome runs the code in the content scripts after the DOM is completely loaded.
+        So there’s no need wrap the code inside a “ready” event.
+
+        Example: content.js
+
+            (function(){
+
+                var allparagraphs = document.getElementByTag('p');
+
+                for( var i =  0 ; i < allparagraphs.length ; i++ ){
+
+                    allparagraphs[i].style['background-color'] = '#c0c';
+
+                }
+            })();   
+    3.Deploy the extension:
+        To test the extension
+            a. go to the browser’s extension page via chrome://extensions/.
+            b. Check “Developer mode” and then “Load unpacked extension”.
+            c. Browse to the directory where you’ve stored your manifest.json and content.js file.
+            d.Once the extension is installed you can enable or disable it, as well as delete it.
+    NOTE:*** Also note that if you change the code you’ll need to select “reload” before the new code will run.
+ 
+ This is all you need for a working chrome extension!
